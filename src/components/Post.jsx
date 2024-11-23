@@ -19,7 +19,7 @@ const Post = ({ post }) => {
                     <span key={index} className="badge text-bg-primary hashtag">{tag}</span>
                 ))}
                 <div className="alert alert-success reactions" role="alert">
-                   This post is reacted by {post.reactions} people
+                   This post is reacted by {post.reactions.likes} people
                 </div>
             </div>
         </div>

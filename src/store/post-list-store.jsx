@@ -4,6 +4,7 @@ import { Children, createContext, useReducer } from "react";
 // store here all the contexts 
 export const PostList = createContext({
     postList: [],
+    addInitialPosts: () => { },
     addPost: () => { },
     deletePost: () => { },
 });
@@ -15,6 +16,8 @@ const postListReducer = (currPostList, action) => {
         newList = currPostList.filter((post) => post.id !== action.payload.postId);
     } else if (action.type === "ADD_POST") {
         newList = [action.payload, ...currPostList];
+    } else if (action.type === "ADD_INITIAL_POSTS") {
+        newList = action.payload.posts;
     }
 
     return newList;
@@ -34,6 +37,16 @@ const PostListProvider = ({ children }) => {
             },
         })
     }
+
+    const addInitialPosts = (posts) => {
+        dispatchPostList({
+            type: "ADD_INITIAL_POSTS",
+            payload: {
+                posts
+            },
+        })
+    }
+
     const deletePost = (postId) => {
         dispatchPostList({
             type: "DELETE_POST",
@@ -42,35 +55,16 @@ const PostListProvider = ({ children }) => {
     }
 
     //update from here
-    const [postList, dispatchPostList] = useReducer(postListReducer, DEFAULT_POST_LIST);
+    const [postList, dispatchPostList] = useReducer(postListReducer, []);
 
     // pass from here to the context provider 
     return (
-        <PostList.Provider value={{ postList, addPost, deletePost }}>
+        <PostList.Provider value={{ postList, addInitialPosts, addPost, deletePost }}>
             {children}
         </PostList.Provider>
     );
 };
 
 
-const DEFAULT_POST_LIST = [
-    {
-        id: 1,
-        title: 'Going to Mumbai',
-        body: 'Hi, friends! I am going to Mumbai for a vacation. I am excited to visit the Gateway of India and explore the city.',
-        reactions: 3,
-        userId: 'user-9',
-        tags: ['vacation', 'travel', 'Mumbai'],
-    },
-    {
-        id: 2,
-        title: 'New Year Resolutions',
-        body: 'I have set some new year resolutions for myself. I want to improve my coding skills, read more books, and spend more time with family and friends.',
-        reactions: 5,
-        userId: 'user-10',
-        tags: ['new year', 'resolutions', 'self-improvement'],
-    },
-
-]
 
 export default PostListProvider;
